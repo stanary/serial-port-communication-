@@ -1,0 +1,20 @@
+module link(
+			data1,
+			data2,
+			key,
+			data_out
+    );
+	
+			input [7:0] data1,data2;
+			input key;
+			output reg [7:0] data_out;
+			
+	always@( * )
+		begin
+			case( key )
+				0: data_out = data1;
+				1: data_out = data2;
+			endcase
+		end
+
+endmodule
