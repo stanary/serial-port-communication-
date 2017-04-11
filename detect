@@ -1,0 +1,53 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+//  
+// Create Date:    11:03:37 11/29/2016 
+// Design Name: 
+// Module Name:    detect 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+// 
+//////////////////////////////////////////////////////////////////////////////////
+module detect(
+			clk,
+			rst,
+			pin_in,
+			be_sig
+    );
+	 
+	 
+	 input		 		clk;
+	 input 				rst;
+	 input 			pin_in;
+	 output 			be_sig;
+	
+	 reg     		 S1,S2;
+
+always@(posedge clk or negedge rst )
+	begin
+		if(!rst)
+			begin
+				S1 <= 1'b0;
+				S2 <= 1'b0;//赋值注意在复位之后是否发生一次触发
+			end
+		else 
+			begin
+				S1 <= pin_in;
+				S2 <= S1;
+			end
+	end
+	 
+assign be_sig = S2 & (! S1);
+
+endmodule
+
