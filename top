@@ -1,0 +1,68 @@
+//////////////////////////////////////////////////////////////////////////////////
+module top(clk,
+		rst,
+		clk,
+		key,
+		pin_in,
+		rx_en_sig,
+//		rx_d_sig,
+		rx_data
+	 );
+	 
+	 input clk;
+	 input rst;
+	 input key;
+	 input pin_in;
+	 input rx_en_sig;
+//	 output rx_d_sig;
+	 output[7:0] rx_data;
+	 
+	 wire be_sig;
+	 wire cnt_sig;
+	 wire bps_clk;
+	 wire rx_d_sig;
+	 wire [7:0]led;
+	 wire	[7:0]data;
+	
+ 	detect  u1(	.clk(clk),
+					.rst(rst),
+					.pin_in(pin_in),
+					.be_sig(be_sig)
+				  );
+				  
+	rx_bps  u2(
+					.clk(clk),
+			      .rst(rst),
+					.rx_d_sig(rx_d_sig),
+			      .cnt_sig(cnt_sig),
+					.bps_clk(bps_clk)
+				 );
+
+	contrl   u3(
+					.clk(clk),
+			      .rst(rst),
+					.pin_in(pin_in),
+			      .be_sig(be_sig),
+					.rx_en_sig(rx_en_sig),
+					.bps_clk(bps_clk),
+					.cnt_sig(cnt_sig),
+					.rx_d_sig(rx_d_sig),
+					.data(data)
+    );
+	 message		u4( 
+						.clk(clk),
+						.rst(rst),
+						.data(data),
+						.rx_d_sig(rx_d_sig),
+						.led(led)
+	
+    );
+	 
+	link	u5(
+					.data1(data),
+					.data2(led),
+					.key(key),
+					.data_out(rx_data)
+    );
+endmodule
+ 
