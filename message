@@ -1,0 +1,178 @@
+module message( 
+			clk,
+			rst,
+			data,
+			rx_d_sig,
+			led
+    );
+		
+		input clk;
+		input rst;
+		input [7:0]data;
+		input rx_d_sig;
+		output [7:0] led ;
+		
+		reg [3:0] s;
+		reg [25:0] cn;
+		reg [7:0]star ;
+		reg led_able;
+		
+		parameter  TIME = 25'd25000_00;
+
+always@(posedge clk or negedge rst)
+	begin
+		if(!rst)
+			cn <= 0;
+		else if(cn == TIME - 1)
+			cn <= 0;
+		else
+			cn <= cn + 1;
+	end
+	
+always@(posedge clk or negedge rst)
+	begin
+		if(!rst)
+			star <= 0;
+		else if(cn == TIME - 1)
+			star <= ~ star;
+	end		
+	
+	assign led = led_able ? 8'b1111_1111 : star;
+	
+	always@(posedge clk or negedge rst)
+		begin
+			if(!rst)
+				begin
+					s   <= 4'b0;
+					led_able <= 1;
+				end
+			else
+				case( s )
+					0://if(rx_d_sig)
+						//begin
+							if(data == 8'b0100_1001)
+								begin
+									s <= s + 4'b1;
+								end
+							else
+								begin
+									s  <= 4'd0;
+									led_able <= 1'b0;
+								end
+						//end
+					1:if(rx_d_sig) 
+						begin
+							if(data == 8'b0010_0000)
+								s    <= s + 4'b1;
+							else
+								begin
+									s  <= 4'd0;
+									led_able <= 1'b0;
+								end
+						end
+					2:if(rx_d_sig) 
+						begin
+							if(data == 8'b0110_1100)
+								s    <= s + 4'b1;
+							else
+								begin
+									s  <= 4'd0;
+									led_able <= 1'b0;
+								end
+						end
+					3:if(rx_d_sig) 
+						begin
+							if(data <= 8'b0110_1111)
+								s    <= s + 4'b1;
+							else
+								begin
+									s  <= 4'd0;
+									led_able <= 1'b0;
+								end
+						end
+					4:if(rx_d_sig) 
+						begin
+							if(data <= 8'b0111_0110)
+								s    <= s + 4'b1;
+							else
+								begin
+									s  <= 4'd0;
+									led_able <= 1'b0;
+							end
+						end
+				5:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0110_0101)
+							s    <= s + 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+				6:if(rx_d_sig) 
+					begin
+						if (data <= 8'b0010_0000)
+							s <= s + 4'b1;
+						else
+							begin
+								s  <= 4'd0;
+								led_able <= 1'b0;
+							end
+					end
+				7:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0100_0110)
+							s    <= s + 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+					
+				8:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0101_0000)
+							s    <= s + 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+				9:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0100_0111)
+							s    <= s + 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+				10:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0100_0001)
+							s    <= s + 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+				11:if(rx_d_sig) 
+					begin
+						if(data <= 8'b0010_0000)
+							led_able <= 4'b1;
+						else
+							begin
+								s  <= 1'd0;
+								led_able <= 1'b0;
+							end
+					end
+				endcase
+		end
+
+
+endmodule
